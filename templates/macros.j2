@@ -10,7 +10,7 @@
 {% if type == "source" %}
 ip({{hostname}}),
 {% else %}
-{{hostname}}
+{{hostname}},
 {% endif %}
 {%- endmacro %}
 
@@ -24,7 +24,7 @@ ip({{hostname}}),
     port({{options.port}})
 {% else %}
   tcp(
-    {{ get_hostname_parameter(hostname, type) }},
+    {{ get_hostname_parameter(hostname, type) }}
     port({{options.port}}),
     tls(
       ca_dir({{options.ca_dir}})

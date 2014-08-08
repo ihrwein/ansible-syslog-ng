@@ -11,6 +11,7 @@ syslog_ng_config_options:
   perm: 0640
   stats_freq: 0
   bad_hostname: '"^gconfd$"'
+  create_dirs: 'yes'
 
 syslog_ng_config_version: 3.5
 
@@ -66,4 +67,6 @@ syslog_ng_server_sources:
     proto: tcp
     port: 1234
 
+syslog_ng_server_dest_dir: /var/log
+syslog_ng_server_file_macro: $YEAR.$MONTH.$DAY/$HOST.log
 

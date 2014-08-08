@@ -1,9 +1,7 @@
 {% import "macros.j2" as macros with context %}
 
-{% include "filters.j2" %}
-
 destination d_local {
-  
+  file("{{syslog_ng_server_dest_dir}}/{{syslog_ng_server_file_macro}}");  
 };
 
 {# Destination generation #}
