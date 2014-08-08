@@ -48,3 +48,12 @@ ip({{hostname}}),
 {{ generate_statements(statements, "destination") }}
 {%- endmacro %}
 
+{# Generate filter references in a logpath #}
+{% macro generate_filters_in_logpath(filters_list) -%}
+{% if filters_list.filters is defined and filters_list.filters|length >= 1 %}
+{% for item in filters_list.filters %}
+  filter({{item}});
+{% endfor %}
+{% endif %}
+{%- endmacro %}
+

@@ -1,10 +1,10 @@
 {% import "macros.j2" as macros with context %}
+{% include "filters.j2" %}
+
 source s_local {
        system();
        internal();
 };
-
-{% include "filters.j2" %}
 
 {# Destination generation #}
 {{ macros.generate_destinations(syslog_ng_client_destinations) }}
@@ -13,6 +13,7 @@ source s_local {
 {% for hostname, options in syslog_ng_client_destinations.iteritems() %}
 log {
   source(s_local);
+  {{ macros.generate_filters_in_logpath(options) }}
   destination({{ macros.generate_statement_name(hostname, "d", options.proto) }});
 };
 

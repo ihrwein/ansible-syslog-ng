@@ -1,4 +1,5 @@
 {% import "macros.j2" as macros with context %}
+{% include "filters.j2" %}
 
 destination d_local {
   file("{{syslog_ng_server_dest_dir}}/{{syslog_ng_server_file_macro}}");  
@@ -11,6 +12,7 @@ destination d_local {
 {% for hostname, options in syslog_ng_server_sources.iteritems() %}
 log {
   source({{ macros.generate_statement_name(hostname, "s", options.proto) }});
+  {{ macros.generate_filters_in_logpath(options) }}
   destination(d_local);
 };
 

@@ -55,6 +55,9 @@ syslog_ng_server_sources:
   '"127.0.0.1"':
     proto: udp
     port: 1234
+    filters:
+      - f_error
+      - f_kern
 #  '"secure.example.com"':
   '"127.0.0.2"':
     proto: tls
