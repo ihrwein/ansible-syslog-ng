@@ -1,29 +1,24 @@
-########################
-# Sources
-########################
-# This is the default behavior of sysklogd package
-# Logs may come from unix stream, but not from another machine.
-#
 source s_src {
        system();
        internal();
 };
 
-########################
-# Filters
-########################
-# Here's come the filter options. With this rules, we can set which 
-# message go where.
-
-
 {% include "filters.j2" %}
 
+{# Some default destinations #}
 {% for f in ['auth', 'cron', 'daemon', 'kern', 'lpr', 'mail', 'syslog', 'user', 'uucp'] %}
 destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
 {% endfor %}
+{# A macro to get  a statement name from hostname, type and proto #}
+{% macro generate_statement_name(hostname, type, proto) -%}
+{% set first_letter = type[0] %}
+{% set statement_name = hostname|replace(".", "_")|replace('"', '') %}
+{{first_letter}}_{{statement_name}}_{{proto}} 
+{%- endmacro %}
 
+{# Destination generation #}
 {% for hostname, options in syslog_ng_client_destinations.iteritems() %}
-destination d_{{hostname|replace(".", "_")|replace('"', '')}}_{{options.proto}} {
+destination {{ generate_statement_name(hostname, "d", options.proto) }} {
 {% if options.proto != "tls" %}
   {{options.proto}}(
     {{hostname}},
@@ -43,72 +38,12 @@ destination d_{{hostname|replace(".", "_")|replace('"', '')}}_{{options.proto}} 
 
 {% endfor %}
 
-# This files are the log come from the mail subsystem.
-#
-destination d_mailinfo { file("{{syslog_ng_local_dest_dir}}/mail.info"); };
-destination d_mailwarn { file("{{syslog_ng_local_dest_dir}}/mail.warn"); };
-destination d_mailerr { file("{{syslog_ng_local_dest_dir}}/mail.err"); };
+{# Generate logpaths #}
+{% for hostname, options in syslog_ng_client_destinations.iteritems() %}
+log {
+  source(s_src);
+  destination({{ generate_statement_name(hostname, "d", options.proto) }});
+};
 
-# Logging for INN news system
-#
-destination d_newscrit { file("{{syslog_ng_local_dest_dir}}/news/news.crit"); };
-destination d_newserr { file("{{syslog_ng_local_dest_dir}}/news/news.err"); };
-destination d_newsnotice { file("{{syslog_ng_local_dest_dir}}/news/news.notice"); };
-
-# Some `catch-all' logfiles.
-#
-destination d_debug { file("{{syslog_ng_local_dest_dir}}/debug"); };
-destination d_error { file("{{syslog_ng_local_dest_dir}}/error"); };
-destination d_messages { file("{{syslog_ng_local_dest_dir}}/messages"); };
-
-# The root's console.
-#
-destination d_console { usertty("root"); };
-
-# Virtual console.
-#
-destination d_console_all { file(`tty10`); };
-
-# The named pipe /dev/xconsole is for the nsole' utility.  To use it,
-# you must invoke nsole' with the -file' option:
-#
-#    $ xconsole -file /dev/xconsole [...]
-#
-destination d_xconsole { pipe("/dev/xconsole"); };
-
-# Debian only
-destination d_ppp { file("{{syslog_ng_local_dest_dir}}/ppp.log"); };
-
-########################
-# Log paths
-########################
-log { source(s_src); filter(f_auth); destination(d_auth); };
-log { source(s_src); filter(f_cron); destination(d_cron); };
-log { source(s_src); filter(f_daemon); destination(d_daemon); };
-log { source(s_src); filter(f_kern); destination(d_kern); };
-log { source(s_src); filter(f_lpr); destination(d_lpr); };
-log { source(s_src); filter(f_syslog3); destination(d_syslog); };
-log { source(s_src); filter(f_user); destination(d_user); };
-log { source(s_src); filter(f_uucp); destination(d_uucp); };
-
-log { source(s_src); filter(f_mail); destination(d_mail); };
-#log { source(s_src); filter(f_mail); filter(f_info); destination(d_mailinfo); };
-#log { source(s_src); filter(f_mail); filter(f_warn); destination(d_mailwarn); };
-#log { source(s_src); filter(f_mail); filter(f_err); destination(d_mailerr); };
-
-log { source(s_src); filter(f_news); filter(f_crit); destination(d_newscrit); };
-log { source(s_src); filter(f_news); filter(f_err); destination(d_newserr); };
-log { source(s_src); filter(f_news); filter(f_notice); destination(d_newsnotice); };
-#log { source(s_src); filter(f_cnews); destination(d_console_all); };
-#log { source(s_src); filter(f_cother); destination(d_console_all); };
-
-#log { source(s_src); filter(f_ppp); destination(d_ppp); };
-
-log { source(s_src); filter(f_debug); destination(d_debug); };
-log { source(s_src); filter(f_error); destination(d_error); };
-log { source(s_src); filter(f_messages); destination(d_messages); };
-
-log { source(s_src); filter(f_console); destination(d_console_all);
-				    destination(d_xconsole); };
-log { source(s_src); filter(f_crit); destination(d_console); };
+{% endfor %}
 
