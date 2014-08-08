@@ -1,0 +1,20 @@
+{% import "macros.j2" as macros with context %}
+
+{% include "filters.j2" %}
+
+destination d_local {
+  
+};
+
+{# Destination generation #}
+{{ macros.generate_sources(syslog_ng_server_sources) }}
+
+{# Generate logpaths #}
+{% for hostname, options in syslog_ng_server_sources.iteritems() %}
+log {
+  source({{ macros.generate_statement_name(hostname, "s", options.proto) }});
+  destination(d_local);
+};
+
+{% endfor %}
+

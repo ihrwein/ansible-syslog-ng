@@ -47,3 +47,23 @@ syslog_ng_client_destinations:
   '"127.0.0.3"':
     proto: tcp
     port: 1234
+
+# server mode options
+
+syslog_ng_server_sources:
+  '"127.0.0.1"':
+    proto: udp
+    port: 1234
+#  '"secure.example.com"':
+  '"127.0.0.2"':
+    proto: tls
+    port: 10514
+    ca_dir: '"/opt/syslog-ng/etc/syslog-ng/ca.d"'
+    key_file: '"/opt/syslog-ng/etc/syslog-ng/key.d/client.key"'
+    cert_file: '"/opt/syslog-ng/etc/syslog-ng/cert.d/client_cert.pem"'
+#  '"tcp.example.com"':
+  '"127.0.0.3"':
+    proto: tcp
+    port: 1234
+
+

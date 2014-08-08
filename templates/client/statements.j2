@@ -1,14 +1,10 @@
 {% import "macros.j2" as macros with context %}
-source s_src {
+source s_local {
        system();
        internal();
 };
 
 {% include "filters.j2" %}
-{# Some default destinations #}
-{% for f in ['auth', 'cron', 'daemon', 'kern', 'lpr', 'mail', 'syslog', 'user', 'uucp'] %}
-destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
-{% endfor %}
 
 {# Destination generation #}
 {{ macros.generate_destinations(syslog_ng_client_destinations) }}
@@ -16,7 +12,7 @@ destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
 {# Generate logpaths #}
 {% for hostname, options in syslog_ng_client_destinations.iteritems() %}
 log {
-  source(s_src);
+  source(s_local);
   destination({{ macros.generate_statement_name(hostname, "d", options.proto) }});
 };
 

@@ -5,16 +5,26 @@
 {{first_letter}}_{{statement_name}}_{{proto}} 
 {%- endmacro %}
 
+{# A macro to get the right first parameter in a source or destination #}
+{% macro get_hostname_parameter(hostname, type) -%}
+{% if type == "source" %}
+ip({{hostname}}),
+{% else %}
+{{hostname}}
+{% endif %}
+{%- endmacro %}
+
+{# A general macro which generates source or destination statements from dictionaries #}
 {% macro generate_statements(statements, type) -%}
 {% for hostname, options in statements.iteritems() %}
 {{type}} {{ generate_statement_name(hostname, type, options.proto) }} {
 {% if options.proto != "tls" %}
   {{options.proto}}(
-    {{hostname}},
+    {{ get_hostname_parameter(hostname, type) }}
     port({{options.port}})
 {% else %}
   tcp(
-    {{hostname}},
+    {{ get_hostname_parameter(hostname, type) }},
     port({{options.port}}),
     tls(
       ca_dir({{options.ca_dir}})
@@ -28,10 +38,12 @@
 {% endfor %}
 {%- endmacro %}
 
+{# Generate sources from dictionaries, like syslog_ng_client_destinations #}
 {% macro generate_sources(statements) -%}
 {{ generate_statements(statements, "source") }}
 {%- endmacro %}
 
+{# Generate sources from dictionaries, like syslog_ng_client_destinations #}
 {% macro generate_destinations(statements) -%}
 {{ generate_statements(statements, "destination") }}
 {%- endmacro %}
