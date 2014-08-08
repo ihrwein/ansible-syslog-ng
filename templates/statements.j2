@@ -1,11 +1,13 @@
 {% import "macros.j2" as macros with context %}
 {% include "filters.j2" %}
 
+{% block mode_statement_definition %}
 destination d_local {
   file("{{syslog_ng_server_dest_dir}}/{{syslog_ng_server_file_macro}}");  
 };
+{% endblock %}
 
-{# Source generation #}
+{# Destination generation #}
 {{ macros.generate_sources(syslog_ng_server_sources) }}
 
 {# Generate logpaths #}
