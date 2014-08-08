@@ -15,7 +15,8 @@ source s_src {
 # Here's come the filter options. With this rules, we can set which 
 # message go where.
 
-@include "{{syslog_ng_config_dir}}/conf.d/filters.conf"
+
+{% include "filters.j2" %}
 
 {% for f in ['auth', 'cron', 'daemon', 'kern', 'lpr', 'mail', 'syslog', 'user', 'uucp'] %}
 destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
@@ -24,15 +25,18 @@ destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
 {% for hostname, options in syslog_ng_client_destinations.iteritems() %}
 destination d_{{hostname|replace(".", "_")|replace('"', '')}}_{{options.proto}} {
 {% if options.proto != "tls" %}
-  {{ options.proto }}(
-    {{ hostname }}
-{% for k, v in options.iteritems() %}
-{% if k != "proto" %}
-    {{ k }}({{v}})
-{% endif %}
-{% endfor %}
+  {{options.proto}}(
+    {{hostname}},
+    port({{options.port}})
 {% else %}
-
+  tcp(
+    {{hostname}},
+    port({{options.port}}),
+    tls(
+      ca_dir({{options.ca_dir}})
+      key_file({{options.key_file}})
+      cert_file({{options.cert_file}})
+    )
 {% endif %}
   );
 };
