@@ -21,6 +21,24 @@ source s_src {
 destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
 {% endfor %}
 
+{% for hostname, options in syslog_ng_client_destinations.iteritems() %}
+destination d_{{hostname|replace(".", "_")|replace('"', '')}}_{{options.proto}} {
+{% if options.proto != "tls" %}
+  {{ options.proto }}(
+    {{ hostname }}
+{% for k, v in options.iteritems() %}
+{% if k != "proto" %}
+    {{ k }}({{v}})
+{% endif %}
+{% endfor %}
+{% else %}
+
+{% endif %}
+  );
+};
+
+{% endfor %}
+
 # This files are the log come from the mail subsystem.
 #
 destination d_mailinfo { file("{{syslog_ng_local_dest_dir}}/mail.info"); };

@@ -5,10 +5,12 @@
 #  apt: update_cache=yes
 - name: install syslog-ng
   apt: name=syslog-ng-core state=present
+- name: copy filters.conf under {{syslog_ng_config_dir}}/conf.d
+  copy: "src=filters.conf dest={{syslog_ng_config_dir}}/conf.d/filters.conf owner={{syslog_ng_user}} group={{syslog_ng_group}}"
+- name: applying {{ syslog_ng_mode }} mode configurations
+  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }}  owner={{syslog_ng_user}} group={{syslog_ng_group}}
+#  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }} validate="syslog-ng --syntax-only %s"
   notify:
   - restart syslog-ng
-- name: applying {{ syslog_ng_mode }} mode configurations
-  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }}
-#  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }} validate="syslog-ng --syntax-only %s"
 - name: ensure syslog-ng is running
   service: name=syslog-ng state=started

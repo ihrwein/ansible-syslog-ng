@@ -1,16 +1,11 @@
 ---
 syslog_ng_mode: local
 
-# local: internal es system uzenetek gyujtese es /var/log ala rakasa, lenyegeben default config
-# parameterek:
-# client: osszes helyi log gyujtese es tovabbitasa egy szervernek.
-# relay: halozatrol fogad logokat es azokat tovadd kuldi egy masik szervernek
-# server: halozatrol fogad logokat es azokat leteszi diskre
 syslog_ng_config_options:
-  chain_hostnames: "'off'"
+  chain_hostnames: 'off'
   flush_lines: 0
-  use_dns: "'no'"
-  use_fqdn: "'no'"
+  use_dns: 'no'
+  use_fqdn: 'no'
   owner: '"root"'
   group: '"adm"'
   perm: 0640
@@ -28,9 +23,25 @@ syslog_ng_config_file: "{{ syslog_ng_config_dir }}/syslog-ng.conf"
 
 syslog_ng_config_include_from_conf_d: true
 
+syslog_ng_group: root
+syslog_ng_user: root
+
 # local mode options
 
-syslog_ng_local_group_logs_by_facility: true
 syslog_ng_local_dest_dir: /var/log
-syslog_ng_local_group_logs_by_severity: true
 
+# client mode options
+
+syslog_ng_client_destinations:
+  '"candrop.example.com"':
+    proto: udp
+    port: 1234
+  '"secure.example.com"':
+    proto: tls
+    port: 10514
+    ca_dir: '"/opt/syslog-ng/etc/syslog-ng/ca.d"'
+    key_file: '"/opt/syslog-ng/etc/syslog-ng/key.d/client.key"'
+    cert_file: '"/opt/syslog-ng/etc/syslog-ng/cert.d/client_cert.pem"'
+  '"tcp.example.com"':
+    proto: tcp
+    port: 1234
