@@ -1,0 +1,36 @@
+---
+syslog_ng_mode: local
+
+# local: internal es system uzenetek gyujtese es /var/log ala rakasa, lenyegeben default config
+# parameterek:
+# client: osszes helyi log gyujtese es tovabbitasa egy szervernek.
+# relay: halozatrol fogad logokat es azokat tovadd kuldi egy masik szervernek
+# server: halozatrol fogad logokat es azokat leteszi diskre
+syslog_ng_config_options:
+  chain_hostnames: "'off'"
+  flush_lines: 0
+  use_dns: "'no'"
+  use_fqdn: "'no'"
+  owner: '"root"'
+  group: '"adm"'
+  perm: 0640
+  stats_freq: 0
+  bad_hostname: '"^gconfd$"'
+
+syslog_ng_config_version: 3.5
+
+syslog_ng_config_includes:
+  - "scl.conf"
+  - "`scl-root`/system/tty10.conf"
+
+syslog_ng_config_dir: "/etc/syslog-ng"
+syslog_ng_config_file: "{{ syslog_ng_config_dir }}/syslog-ng.conf"
+
+syslog_ng_config_include_from_conf_d: true
+
+# local mode options
+
+syslog_ng_local_group_logs_by_facility: true
+syslog_ng_local_dest_dir: /var/log
+syslog_ng_local_group_logs_by_severity: true
+

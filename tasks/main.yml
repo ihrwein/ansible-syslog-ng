@@ -1,0 +1,14 @@
+---
+- name: ping'em all
+  ping:
+#- name: update apt's cache
+#  apt: update_cache=yes
+- name: install syslog-ng
+  apt: name=syslog-ng-core state=present
+  notify:
+  - restart syslog-ng
+- name: applying {{ syslog_ng_mode }} mode configurations
+  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }}
+#  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }} validate="syslog-ng --syntax-only %s"
+- name: ensure syslog-ng is running
+  service: name=syslog-ng state=started

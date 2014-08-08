@@ -1,0 +1,16 @@
+@version: {{ syslog_ng_config_version }}
+
+{% for include in  syslog_ng_config_includes %}
+@include "{{ include  }}"
+{% endfor %}
+
+# Syslog-ng configuration file, compatible with default Debian syslogd
+# installation.
+
+# First, set some global options.
+options {
+{% for k, v in  syslog_ng_config_options.iteritems() %}
+    {{ k }}({{ v  }});
+{% endfor %}
+};
+

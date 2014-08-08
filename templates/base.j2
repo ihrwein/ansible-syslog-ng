@@ -1,0 +1,7 @@
+{% include "header.j2" %}
+
+{% include syslog_ng_mode + "/statements.j2" %}
+
+{% if syslog_ng_config_include_from_conf_d is defined %}
+@include "{{syslog_ng_config_dir}}/conf.d/*.conf"
+{% endif %}
