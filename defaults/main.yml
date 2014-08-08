@@ -37,7 +37,7 @@ syslog_ng_client_destinations:
     proto: udp
     port: 1234
 #  '"secure.example.com"':
-  '"127.0.0.3"':
+  '"127.0.0.2"':
     proto: tls
     port: 10514
     ca_dir: '"/opt/syslog-ng/etc/syslog-ng/ca.d"'

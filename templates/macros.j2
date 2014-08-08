@@ -1,0 +1,38 @@
+{# A macro to get  a statement name from hostname, type and proto #}
+{% macro generate_statement_name(hostname, type, proto) -%}
+{% set first_letter = type[0] %}
+{% set statement_name = hostname|replace(".", "_")|replace('"', '') %}
+{{first_letter}}_{{statement_name}}_{{proto}} 
+{%- endmacro %}
+
+{% macro generate_statements(statements, type) -%}
+{% for hostname, options in statements.iteritems() %}
+{{type}} {{ generate_statement_name(hostname, type, options.proto) }} {
+{% if options.proto != "tls" %}
+  {{options.proto}}(
+    {{hostname}},
+    port({{options.port}})
+{% else %}
+  tcp(
+    {{hostname}},
+    port({{options.port}}),
+    tls(
+      ca_dir({{options.ca_dir}})
+      key_file({{options.key_file}})
+      cert_file({{options.cert_file}})
+    )
+{% endif %}
+  );
+};
+
+{% endfor %}
+{%- endmacro %}
+
+{% macro generate_sources(statements) -%}
+{{ generate_statements(statements, "source") }}
+{%- endmacro %}
+
+{% macro generate_destinations(statements) -%}
+{{ generate_statements(statements, "destination") }}
+{%- endmacro %}
+

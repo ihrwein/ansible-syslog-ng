@@ -1,48 +1,23 @@
+{% import "macros.j2" as macros with context %}
 source s_src {
        system();
        internal();
 };
 
 {% include "filters.j2" %}
-
 {# Some default destinations #}
 {% for f in ['auth', 'cron', 'daemon', 'kern', 'lpr', 'mail', 'syslog', 'user', 'uucp'] %}
 destination d_{{f}} { file("{{syslog_ng_local_dest_dir}}/{{f}}.log"); };
 {% endfor %}
-{# A macro to get  a statement name from hostname, type and proto #}
-{% macro generate_statement_name(hostname, type, proto) -%}
-{% set first_letter = type[0] %}
-{% set statement_name = hostname|replace(".", "_")|replace('"', '') %}
-{{first_letter}}_{{statement_name}}_{{proto}} 
-{%- endmacro %}
 
 {# Destination generation #}
-{% for hostname, options in syslog_ng_client_destinations.iteritems() %}
-destination {{ generate_statement_name(hostname, "d", options.proto) }} {
-{% if options.proto != "tls" %}
-  {{options.proto}}(
-    {{hostname}},
-    port({{options.port}})
-{% else %}
-  tcp(
-    {{hostname}},
-    port({{options.port}}),
-    tls(
-      ca_dir({{options.ca_dir}})
-      key_file({{options.key_file}})
-      cert_file({{options.cert_file}})
-    )
-{% endif %}
-  );
-};
-
-{% endfor %}
+{{ macros.generate_destinations(syslog_ng_client_destinations) }}
 
 {# Generate logpaths #}
 {% for hostname, options in syslog_ng_client_destinations.iteritems() %}
 log {
   source(s_src);
-  destination({{ generate_statement_name(hostname, "d", options.proto) }});
+  destination({{ macros.generate_statement_name(hostname, "d", options.proto) }});
 };
 
 {% endfor %}
