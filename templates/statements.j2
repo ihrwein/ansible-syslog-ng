@@ -1,22 +1,16 @@
 {% import "macros.j2" as macros with context %}
 {% include "filters.j2" %}
 
-{% block mode_statement_definition %}
+{% block mode_header %}
 destination d_local {
   file("{{syslog_ng_server_dest_dir}}/{{syslog_ng_server_file_macro}}");  
 };
 {% endblock %}
 
+{% block statement_generation %}
 {# Destination generation #}
 {{ macros.generate_sources(syslog_ng_server_sources) }}
+{% endblock %}
 
-{# Generate logpaths #}
-{% for hostname, options in syslog_ng_server_sources.iteritems() %}
-log {
-  source({{ macros.generate_statement_name(hostname, "s", options.proto) }});
-  {{ macros.generate_filters_in_logpath(options) }}
-  destination(d_local);
-};
 
-{% endfor %}
 

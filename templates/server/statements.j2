@@ -9,12 +9,4 @@ destination d_local {
 {{ macros.generate_sources(syslog_ng_server_sources) }}
 
 {# Generate logpaths #}
-{% for hostname, options in syslog_ng_server_sources.iteritems() %}
-log {
-  source({{ macros.generate_statement_name(hostname, "s", options.proto) }});
-  {{ macros.generate_filters_in_logpath(options) }}
-  destination(d_local);
-};
-
-{% endfor %}
-
+{{ macros.generate_logpaths(syslog_ng_server_sources, "source") }}
