@@ -12,7 +12,7 @@ ip({{hostname}}),
 {% else %}
 {{hostname}},
 {% endif %}
-{%- endmacro %}
+{%- endmacro -%}
 
 {# A general macro which generates source or destination statements from dictionaries #}
 {% macro generate_statements(statements, type) -%}
@@ -51,13 +51,13 @@ ip({{hostname}}),
 {%- endmacro %}
 
 {# Generate filter references in a logpath #}
-{% macro generate_filters_in_logpath(filters) -%}
+{%- macro generate_filters_in_logpath(filters) -%}
 {% if filters|length >= 1 %}
 {% for item in filters %}
   filter({{item}});
 {% endfor %}
 {% endif %}
-{%- endmacro %}
+{%- endmacro -%}
 
 
 {# Generate log statements #}
