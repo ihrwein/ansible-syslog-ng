@@ -1,0 +1,15 @@
+---
+- hosts: servers
+  vars:
+    syslog_ng_mode: server
+    syslog_ng_server_sources:
+      - "127.0.0.1":
+          proto: udp
+          port: 1524
+
+    syslog_ng_server_dest_dir: /var/logg
+    syslog_ng_server_file_macro: $YEAR.$MONTH.$DAY/$HOST.log
+
+  remote_user: root
+  roles:
+    - {role: ansible-syslog-ng }

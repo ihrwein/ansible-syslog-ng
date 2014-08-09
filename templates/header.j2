@@ -1,8 +1,7 @@
+{% import "macros.j2" as macros with context %}
 @version: {{ syslog_ng_config_version }}
 
-{% for include in  syslog_ng_config_includes %}
-@include "{{ include  }}"
-{% endfor %}
+{{ macros.add_includes(syslog_ng_config_includes) }}
 
 # Syslog-ng configuration file, compatible with default Debian syslogd
 # installation.

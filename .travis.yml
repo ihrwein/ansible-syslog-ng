@@ -1,0 +1,25 @@
+---
+language: python
+python: "2.7"
+
+env:
+  - ANSIBLE_VERSION=1.4
+  - ANSIBLE_VERSION=1.5
+  - ANSIBLE_VERSION=1.6
+  - ANSIBLE_VERSION=1.7
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y curl
+  - sudo apt-get install -qq syslog-ng-core bash
+
+install:
+  - pip install ansible==${ANSIBLE_VERSION}
+  - "printf '[defaults]\nroles_path = ../' > ansible.cfg"
+
+script:
+  - "mkdir roles"
+  - "ln -s $(pwd) roles/syslog-ng"
+  - "ln -s $(pwd) roles/ihrwein-syslog-ng"
+  - "export roles_path=$(pwd)/roles"
+  - "bash tests/run_tests.sh" 

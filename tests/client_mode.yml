@@ -1,0 +1,15 @@
+---
+- hosts: servers
+  vars:
+    syslog_ng_mode: client
+    syslog_ng_client_destinations:
+      - "127.0.0.1":
+          proto: udp
+          port: 1514
+      - "127.0.0.1":
+          proto: tcp
+          port: 1512
+
+  remote_user: root
+  roles:
+    - {role: ansible-syslog-ng }
