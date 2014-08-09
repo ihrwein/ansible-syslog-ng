@@ -1,13 +1,15 @@
 ---
 syslog_ng_mode: local
+syslog_ng_group: root
+syslog_ng_user: root
 
 syslog_ng_config_options:
   chain_hostnames: 'off'
   flush_lines: 0
   use_dns: 'no'
   use_fqdn: 'no'
-  owner: '"root"'
-  group: '"adm"'
+  owner: '"{{syslog_ng_user}}"'
+  group: '"{{syslog_ng_group}}"'
   perm: 0640
   stats_freq: 0
   bad_hostname: '"^gconfd$"'
@@ -24,8 +26,6 @@ syslog_ng_config_file: "{{ syslog_ng_config_dir }}/syslog-ng.conf"
 
 syslog_ng_config_include_from_conf_d: true
 
-syslog_ng_group: root
-syslog_ng_user: root
 
 # local mode options
 
@@ -33,42 +33,11 @@ syslog_ng_local_dest_dir: /var/log
 
 # client mode options
 
-syslog_ng_client_destinations:
-  - '"127.0.0.1"':
-      proto: udp
-      port: 1234
-#  '"secure.example.com"':
-  - '"127.0.0.2"':
-      proto: tls
-      port: 10514
-      ca_dir: '"/opt/syslog-ng/etc/syslog-ng/ca.d"'
-      key_file: '"/opt/syslog-ng/etc/syslog-ng/key.d/client.key"'
-      cert_file: '"/opt/syslog-ng/etc/syslog-ng/cert.d/client_cert.pem"'
-#  '"tcp.example.com"':
-  - '"127.0.0.3"':
-      proto: tcp
-      port: 1234
+syslog_ng_client_destinations: []
 
 # server mode options
 
-syslog_ng_server_sources:
-  - '"127.0.0.1"':
-      proto: udp
-      port: 1234
-      filters:
-        - f_error
-        - f_kern
-#  '"secure.example.com"':
-  - '"127.0.0.2"':
-      proto: tls
-      port: 10514
-      ca_dir: '"/opt/syslog-ng/etc/syslog-ng/ca.d"'
-      key_file: '"/opt/syslog-ng/etc/syslog-ng/key.d/client.key"'
-      cert_file: '"/opt/syslog-ng/etc/syslog-ng/cert.d/client_cert.pem"'
-#  '"tcp.example.com"':
-  - '"127.0.0.3"':
-      proto: tcp
-      port: 1234
+syslog_ng_server_sources: []
 
 syslog_ng_server_dest_dir: /var/log
 syslog_ng_server_file_macro: $YEAR.$MONTH.$DAY/$HOST.log
