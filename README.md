@@ -1,5 +1,5 @@
 # Syslog-ng Ansible role
-[![Build Status](https://travis-ci.org/ihrwein/ansible-syslog-ng.svg?branch=f/add-tests)](https://travis-ci.org/ihrwein/ansible-syslog-ng)
+[![Build Status](https://travis-ci.org/ihrwein/ansible-syslog-ng.svg?branch=master)](https://travis-ci.org/ihrwein/ansible-syslog-ng)
 
 A role for managing syslog-ng on your computers.
 
