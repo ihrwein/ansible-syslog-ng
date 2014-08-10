@@ -108,6 +108,7 @@ The module receives log messages from network sources in this mode. The local lo
 
  * `syslog_ng_server_dest_dir`: the logfiles will be placed under this directory
  * `syslog_ng_server_sources`: its structure is same as  `syslog_ng_client_destinations`, but it defines sources
+
  ```yaml
  syslog_ng_server_sources:
    - "candrop.example.com":
@@ -126,6 +127,7 @@ The module receives log messages from network sources in this mode. The local lo
        proto: udp
        port: 1234
  ```
+
  * `syslog_ng_server_file_macro`: you can sort out  messages into different files by using this parameter. The files will be placed under `syslog_ng_server_dest_dir`. You can find more information in the [Syslog-ng Admin Guide](http://www.balabit.com/sites/default/files/documents/syslog-ng-ose-3.5-guides/en/syslog-ng-ose-v3.5-guide-admin/html-single/index.html#configuring-macros)
 
  ```yaml
