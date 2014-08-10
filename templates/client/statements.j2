@@ -1,5 +1,5 @@
-{% import "macros.j2" as macros with context %}
-{% include "filters.j2" %}
+        {% import "macros.j2" as macros with context %}
+{% include "common/syslog-ng/" + syslog_ng_config_version + "/filters.j2" %}
 
 source s_local {
        system();

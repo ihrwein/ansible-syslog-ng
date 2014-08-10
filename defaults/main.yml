@@ -15,16 +15,21 @@ syslog_ng_config_options:
   bad_hostname: '"^gconfd$"'
   create_dirs: 'yes'
 
-syslog_ng_config_version: 3.5
+syslog_ng_config_default_port: 514
+syslog_ng_check_syntax_before_reload: true
 
-syslog_ng_config_includes:
-  - "scl.conf"
-  - "`scl-root`/system/tty10.conf"
+syslog_ng_config_version_auto_detect: true
+syslog_ng_config_default_port: 514
+
+# this variable will be overwritten when syslog_ng_config_version_auto_detect is true
+syslog_ng_config_version: "3.3"
+
+# these are overwritten by syslog-ng version specific variables
+syslog_ng_config_includes: []
+syslog_ng_config_post_includes: []
 
 syslog_ng_config_dir: "/etc/syslog-ng"
 syslog_ng_config_file: "{{ syslog_ng_config_dir }}/syslog-ng.conf"
-
-syslog_ng_config_include_from_conf_d: true
 
 
 # local mode options

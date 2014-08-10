@@ -1,0 +1,7 @@
+---
+- hosts: servers
+  vars:
+    syslog_ng_mode: manual
+  remote_user: root
+  roles:
+    - {role: ansible-syslog-ng }

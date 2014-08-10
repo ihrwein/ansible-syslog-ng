@@ -23,11 +23,11 @@ ip({{hostname}}),
 {% if options.proto != "tls" %}
   {{options.proto}}(
     {{ get_hostname_parameter(hostname, type) }}
-    port({{options.port}})
+    port({{options.port|default(514)}})
 {% else %}
   tcp(
     {{ get_hostname_parameter(hostname, type) }}
-    port({{options.port}}),
+    port({{options.port|default(514)}}),
     tls(
       ca_dir({{options.ca_dir}})
       key_file({{options.key_file}})
@@ -51,8 +51,8 @@ ip({{hostname}}),
 {%- endmacro %}
 
 {# Generate filter references in a logpath #}
-{%- macro generate_filters_in_logpath(filters) -%}
-{% if filters|length >= 1 %}
+{%- macro generate_filters_in_logpath(options) -%}
+{% if options.filters|default([])|length >= 1 %}
 {% for item in filters %}
   filter({{item}});
 {% endfor %}
@@ -80,4 +80,17 @@ log {
 {% endfor %}
 {%- endmacro %}
 
+{# Add an include into #}
+{% macro add_include(what) -%}
+@include "{{ what  }}"
+{%- endmacro %}
+
+{# Add a list of includes #}
+{% macro add_includes(includes) -%}
+{% if includes|default([])|length >= 1 %} 
+{% for include in  includes %}
+{{ add_include(include) }}
+{% endfor %}
+{% endif %}
+{%- endmacro %}
 

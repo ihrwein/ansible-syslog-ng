@@ -1,0 +1,5 @@
+syslog_ng_config_includes:
+  - "scl.conf"
+
+syslog_ng_config_post_includes:
+  - "/etc/syslog-ng/conf.d/"

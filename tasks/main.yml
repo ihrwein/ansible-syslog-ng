@@ -1,16 +1,43 @@
 ---
-- name: ping'em all
-  ping:
 #- name: update apt's cache
 #  apt: update_cache=yes
+
 - name: install syslog-ng
   apt: name=syslog-ng-core state=present
-#- name: copy filters.conf under {{syslog_ng_config_dir}}/conf.d
-#  copy: "src=filters.conf dest={{syslog_ng_config_dir}}/conf.d/filters.conf owner={{syslog_ng_user}} group={{syslog_ng_group}}"
-- name: applying {{ syslog_ng_mode }} mode configurations
-  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }}  owner={{syslog_ng_user}} group={{syslog_ng_group}}
-#  template: src="{{ syslog_ng_mode }}.j2" dest={{ syslog_ng_config_file }} validate="syslog-ng --syntax-only %s"
   notify:
-  - restart syslog-ng
-- name: ensure syslog-ng is running
-  service: name=syslog-ng state=started
+  - start syslog-ng
+
+- name: determine syslog-ng's config version
+  shell: 'syslog-ng --version | head -n 1 | grep -o -P "[0-9]\.[0-9][0-9]?"'
+  register: determined_config_version
+  when: syslog_ng_config_version_auto_detect == true
+
+- name: set syslog_ng_config_version variable
+  set_fact: syslog_ng_config_version={{ determined_config_version.stdout }}
+  when: syslog_ng_config_version_auto_detect == true
+
+- include_vars: "../defaults/syslog-ng/{{syslog_ng_config_version}}/main.yml"
+
+- name: "applying {{ syslog_ng_mode }} mode configuration if the generated syntax is OK"
+  when: syslog_ng_check_syntax_before_reload == true
+  template:
+    src="{{syslog_ng_mode}}.j2"
+    dest="{{syslog_ng_config_file}}"
+    owner="{{syslog_ng_user}}"
+    group="{{syslog_ng_group}}"
+    validate='syslog-ng --syntax-only --cfgfile %s'
+  notify:
+  - reload syslog-ng
+
+# this does't check the syntax before reloads
+- name: "applying {{ syslog_ng_mode }} mode configurations without checking syntax"
+  when: syslog_ng_check_syntax_before_reload != true
+  template:
+    src="{{syslog_ng_mode}}.j2"
+    dest="{{syslog_ng_config_file}}"
+    owner="{{syslog_ng_user}}"
+    group="{{syslog_ng_group}}"
+    validate='syslog-ng --syntax-only --cfgfile %s'
+  notify:
+  - reload syslog-ng
+
