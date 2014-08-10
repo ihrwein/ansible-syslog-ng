@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Tibor Benke
+  description: Ansible role to manage syslog-ng
+  license: MIT
+  min_ansible_version: 1.4
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  categories:
+  - system
+  - networking
+  - monitoring
+
+dependencies: []
