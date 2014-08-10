@@ -74,7 +74,9 @@ In this mode, syslog-ng collects all logs from your system and sends them to one
 
 *Variables*:
 
- * `syslog_ng_client_destinations`: target servers in the following format:
+ * `syslog_ng_client_destinations`: target servers, take a look at the examples
+
+*Examples*:
 
 ```yaml
 syslog_ng_client_destinations:
@@ -93,7 +95,7 @@ syslog_ng_client_destinations:
   - "tcp.example.com":
       proto: udp
       port: 1234
- ```
+```
 
 The `port` field has a default value, but the keys under `tls` don't.
 
@@ -108,29 +110,32 @@ The module receives log messages from network sources in this mode. The local lo
 
  * `syslog_ng_server_dest_dir`: the logfiles will be placed under this directory
  * `syslog_ng_server_sources`: its structure is same as  `syslog_ng_client_destinations`, but it defines sources
- ```
- syslog_ng_server_sources:
-   - "candrop.example.com":
-       proto: udp
-       port: 1234
-       filters:
-         - f_error
-         - f_kern
-   - "secure.example.com":
-       proto: tls
-       port: 10514
-       ca_dir: /opt/syslog-ng/etc/syslog-ng/ca.d
-       key_file: /opt/syslog-ng/etc/syslog-ng/key.d/client.key
-       cert_file: /opt/syslog-ng/etc/syslog-ng/cert.d/client_cert.pem
-   - "tcp.example.com":
-       proto: udp
-       port: 1234
- ```
  * `syslog_ng_server_file_macro`: you can sort out  messages into different files by using this parameter. The files will be placed under `syslog_ng_server_dest_dir`. You can find more information in the [Syslog-ng Admin Guide](http://www.balabit.com/sites/default/files/documents/syslog-ng-ose-3.5-guides/en/syslog-ng-ose-v3.5-guide-admin/html-single/index.html#configuring-macros)
 
- ```
-   syslog_ng_server_file_macro: $YEAR.$MONTH.$DAY/$HOST.log
- ```
+ *Examples*:
+
+```yaml
+syslog_ng_server_sources:
+ - "candrop.example.com":
+     proto: udp
+     port: 1234
+     filters:
+       - f_error
+       - f_kern
+ - "secure.example.com":
+     proto: tls
+     port: 10514
+     ca_dir: /opt/syslog-ng/etc/syslog-ng/ca.d
+     key_file: /opt/syslog-ng/etc/syslog-ng/key.d/client.key
+     cert_file: /opt/syslog-ng/etc/syslog-ng/cert.d/client_cert.pem
+ - "tcp.example.com":
+     proto: udp
+     port: 1234
+```
+
+```yaml
+ syslog_ng_server_file_macro: $YEAR.$MONTH.$DAY/$HOST.log
+```
 
 #### Manual
 
