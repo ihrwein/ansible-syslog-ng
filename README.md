@@ -38,7 +38,7 @@ This module uses YAML syntax to define variables. You must explicitly care about
 
 If you assign `yes` or `no` to a variable, YAML treats it as a boolean value. In most cases you don't want this, so place these words between single or double quotes: `'yes'`, `'no'`.
 
-When you want to write a string into `syslog-ng.conf` (for example a hostname), you must double qoute it (`'"secure.example.com"'`) to get the right string in the config (`"secure.example.com"`). You can swap the inner an outer quotation marks.
+When you want to write a string into `syslog-ng.conf` (for example a hostname), you must double quote it (`'"secure.example.com"'`) to get the right string in the config (`"secure.example.com"`). You can swap the inner an outer quotation marks.
 
 You can find examples in the `defaults/main.yml` file.
 
