@@ -143,7 +143,7 @@ This role was designed with simplicity in mind to be easy to use and provide the
 
 For that very reason you can use this mode to use `syslog-ng` in the normal way, by manually defining sources, destination, filters and so on.
 
-The `templates/manual.j2` file includes a copy of a stock Debian `syslog-ng.conf`. You can use Jinja expressions in it and you have access to the defined variables as well. Tweak it as you want, by applying this role the modified configuration will be automatically 'copied' to your server.
+The `templates/manual/syslog-ng/[YOUR_SYSLOG-NG_VERSION]/syslog-ng.j2` file includes a copy of a stock Debian `syslog-ng.conf`. You can use Jinja expressions in it and you have access to the defined variables as well. Tweak it as you want, by applying this role the modified configuration will be automatically 'copied' to your server.
 
 ## Development
 ### Contribution
