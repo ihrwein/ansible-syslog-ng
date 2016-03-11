@@ -15,7 +15,6 @@ syslog_ng_config_options:
   bad_hostname: '"^gconfd$"'
   create_dirs: 'yes'
 
-syslog_ng_config_default_port: 514
 syslog_ng_check_syntax_before_reload: true
 
 syslog_ng_config_version_auto_detect: true
