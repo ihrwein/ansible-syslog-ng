@@ -7,6 +7,7 @@ A role for managing syslog-ng on your computers.
 
 ### Ansible
 It was tested on the following versions:
+ * 2.0
  * 1.7
  * 1.6
  * 1.5
@@ -95,6 +96,13 @@ syslog_ng_client_destinations:
   - "tcp.example.com":
       proto: udp
       port: 1234
+  - "syslog.example.com"
+      proto: syslog
+      port: 601
+      extra:
+        transport: tcp
+        so-keepalive: yes
+        so-sndbuf: 1024000
 ```
 
 The `port` field has a default value, but the keys under `tls` don't.
@@ -131,6 +139,12 @@ syslog_ng_server_sources:
  - "tcp.example.com":
      proto: udp
      port: 1234
+ - "syslog.example.com":
+     proto: syslog
+     port: 601
+     extra:
+       transport: tcp
+       so-keepalive: yes
 ```
 
 ```yaml

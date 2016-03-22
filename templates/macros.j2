@@ -2,11 +2,11 @@
 {% macro generate_statement_name(hostname, type, proto) -%}
 {% set first_letter = type[0] %}
 {% set statement_name = hostname|replace(".", "_")|replace('"', '') %}
-{{first_letter}}_{{statement_name}}_{{proto}} 
+{{first_letter}}_{{statement_name}}_{{proto}}
 {%- endmacro %}
 
 {# A macro to get the right first parameter in a source or destination #}
-{% macro get_hostname_parameter(hostname, type) -%}
+{%- macro get_hostname_parameter(hostname, type) -%}
 {% if type == "source" %}
 ip({{hostname}}),
 {% else %}
@@ -23,10 +23,16 @@ ip({{hostname}}),
 {% if options.proto != "tls" %}
   {{options.proto}}(
     {{ get_hostname_parameter(hostname, type) }}
+    {% for extra_item in options.extra.iteritems() -%}
+    {{ extra_item[0] }}({{ extra_item[1] }}),
+    {% endfor -%}
     port({{options.port|default(514)}})
 {% else %}
-  tcp(
+  {{options.proto}}(
     {{ get_hostname_parameter(hostname, type) }}
+    {% for extra_item in options.extra.iteritems() -%}
+    {{ extra_item[0] }}({{ extra_item[1] }}),
+    {% endfor -%}
     port({{options.port|default(514)}}),
     tls(
       ca_dir({{options.ca_dir}})
@@ -53,12 +59,11 @@ ip({{hostname}}),
 {# Generate filter references in a logpath #}
 {%- macro generate_filters_in_logpath(options) -%}
 {% if options.filters|default([])|length >= 1 %}
-{% for item in filters %}
+{% for item in options.filters %}
   filter({{item}});
 {% endfor %}
 {% endif %}
 {%- endmacro -%}
-
 
 {# Generate log statements #}
 {% macro generate_logpaths(statements, type) -%}
@@ -68,11 +73,11 @@ ip({{hostname}}),
 log {
 {% if type == "destination" %}
   source(s_local);
-{{ generate_filters_in_logpath(options) }}
+  {{ generate_filters_in_logpath(options) }}
   destination({{ generate_statement_name(hostname, type, options.proto) }});
 {% else %}
   source({{ generate_statement_name(hostname, type, options.proto) }});
-{{ generate_filters_in_logpath(options.filters|default([])) }}
+  {{ generate_filters_in_logpath(options.filters|default([])) }}
   destination(d_local);
 {% endif %}
 };
@@ -87,10 +92,9 @@ log {
 
 {# Add a list of includes #}
 {% macro add_includes(includes) -%}
-{% if includes|default([])|length >= 1 %} 
+{% if includes|default([])|length >= 1 %}
 {% for include in  includes %}
 {{ add_include(include) }}
 {% endfor %}
 {% endif %}
 {%- endmacro %}
-

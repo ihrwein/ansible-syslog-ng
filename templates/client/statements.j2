@@ -1,9 +1,9 @@
-        {% import "macros.j2" as macros with context %}
+{% import "macros.j2" as macros with context %}
 {% include "common/syslog-ng/" + syslog_ng_config_version + "/filters.j2" %}
 
 source s_local {
-       system();
-       internal();
+  system();
+  internal();
 };
 
 {# Destination generation #}
@@ -11,4 +11,3 @@ source s_local {
 
 {# Generate logpaths #}
 {{ macros.generate_logpaths(syslog_ng_client_destinations, "destination") }}
-
